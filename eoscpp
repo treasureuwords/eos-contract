@@ -1,0 +1,4 @@
+#/bin/bash
+
+cur=$(pwd)
+exec docker run --rm -it -v $cur:/home eosio/eos-dev eosiocpp -o /home/$1.wast /home/$1.cpp

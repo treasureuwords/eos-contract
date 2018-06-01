@@ -19,26 +19,23 @@ void forum::sign_up( account_name account, string nickname, string photo, string
             u.photo = photo;
             u.brief_intro = brief_intro;
             u.honor_score = 0;
-        })
+        });
     }    
 }
 
 
 void forum::create_post( account_name account, string title, string body, string category){
-    print("post [", body, "] from ", name)
+    eosio::print("post [", "] from ", account);
 }
 
 void forum::create_comment( account_name account, uint64_t parent, string body){
-    print("comment [", body, "] from ", name)
+    eosio::print("comment [", "] from ", account);
 }
 
 void forum::like (account_name account, uint64_t id){
-    print("like [", id, "] from ", name)
+    eosio::print("like [", id, "] from ", account);
 }
 
 void forum::dislike (account_name account, uint64_t id){
-    print("dislike [", ik, "] from ", name)
+    eosio::print("dislike [", id, "] from ", account);
 }
-
-
-EOSIO_ABI(forum, (sign_up)(create_post)(create_comment)(like)(dislike))

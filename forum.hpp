@@ -1,6 +1,5 @@
 #pragma once
 
-#include <eosiolib/asset.hpp>
 #include <eosiolib/eosio.hpp>
 
 #include <string>
@@ -9,85 +8,84 @@ namespace eosiosystem {
    class system_contract;
 }
 
-namespace forum {
 
-   using std::string;
 
-   class forum : public contract {
-       using contract::contract;
-       public:
-        struct author {
-            account_name     name;
-            string           nickname;
-            string           photo;
-            uint64_t         honor_score;
-            string           brief_intro; 
+using std::string;
 
-            account_name primary_key() const {return name;}
-        }
+class forum : public eosio::contract {
+    using contract::contract;
+    public:
+    struct author {
+        account_name     name;
+        string           nickname;
+        string           photo;
+        uint64_t         honor_score;
+        string           brief_intro; 
 
-        struct content {
-            uint64_t         id;
-            account_name     author;
-            string           body;
+        account_name primary_key() const {return name;}
+    };
 
-            uint64_t primary_key() const {return id;};
-        }
+    struct content {
+        uint64_t         id;
+        account_name     author;
+        string           body;
 
-        struct appraisable {
-            uint64_t         like_cnt;
-            uint64_t         dislike_cnt;
-        }
+        uint64_t primary_key() const {return id;};
+    };
 
-        struct category {
-            string          name;
-            string          intro;
-            string          rule;
-            uint64_t        post_cnt;
+    struct appraisable {
+        uint64_t         like_cnt;
+        uint64_t         dislike_cnt;
+    };
 
-            string primary_key() const {return name;};
-        }
+    struct category {
+        string          name;
+        string          intro;
+        string          rule;
+        uint64_t        post_cnt;
 
-        struct post : public message : public appraisable {
-            string           title;
-            uint64_t         attention_degree;
-            category         cate;
-        }
+        string primary_key() const {return name;};
+    };
 
-        struct comment : public post : public appraisable {
-            uint64_t         parent_id;
-        }
+    struct post : public content , public appraisable {
+        string           title;
+        uint64_t         attention_degree;
+        category         cate;
+    };
 
-        struct message : public content {
-            account_name     to;
-            string         title;
-        }
-        //TODO deal with vote
-        struct votable {
-        }
-       
-       public:
-        forum( account_name self ):contract(self){}
+    struct comment : public post , public appraisable {
+        uint64_t         parent_id;
+    };
 
-        void sign_up( account_name account, string nickname, string photo, string brief_intro);
+    struct message : public content {
+        account_name     to;
+        string         title;
+    };
+    //TODO deal with vote
+    struct votable {
+    };
+    
+    public:
+    forum( account_name self ):contract(self){}
 
-        void create_post( account_name account, string title, string body, string category);
+    void sign_up( account_name account, string nickname, string photo, string brief_intro);
 
-        void create_comment( account_name account, uint64_t parent, string body);
+    void create_post( account_name account, string title, string body, string category);
 
-        void like (account_name account, uint64_t id);
+    void create_comment( account_name account, uint64_t parent, string body);
 
-        void dislike (account_name account, uint64_t id);
+    void like (account_name account, uint64_t id);
 
-       private:
-        typedef eosio::multi_index<N(author), author> users;
-        typedef eosio::multi_index<N(post), post> posts;
-        typedef eosio::multi_index<N(comment), comment> comments;
-         
-   };
+    void dislike (account_name account, uint64_t id);
+
+    private:
+    typedef eosio::multi_index<N(author), author> users;
+    typedef eosio::multi_index<N(post), post> posts;
+    typedef eosio::multi_index<N(comment), comment> comments;
+        
+};
 
   
-
-} /// namespace formu
+ /// namespace formu
 
 EOSIO_ABI(forum, (sign_up)(create_post)(create_comment)(like)(dislike))
